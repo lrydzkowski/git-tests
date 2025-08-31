@@ -1,0 +1,38 @@
+name: "01-02 Build Hotfix Image"
+run-name: "hotfix-${{ github.run_number }}"
+
+on:
+  push:
+    branches:
+      - 'master-hotfix/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  generate-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version_tag: ${{ steps.version.outputs.version_tag }}
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Generate version tag
+        id: version
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0)
+          VERSION_TAG="${LAST_TAG}-hotfix-${{ github.run_number }}"
+          echo "version_tag=${VERSION_TAG}" >> $GITHUB_OUTPUT
+
+  build:
+    needs: generate-version
+    uses: ./.github/workflows/build.yml
+    with:
+      version_tag: ${{ needs.generate-version.outputs.version_tag }}
+      run_name: "hotfix-${{ github.run_number }}"
+    secrets: inherit

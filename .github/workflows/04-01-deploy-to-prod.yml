@@ -1,0 +1,35 @@
+name: "04-01 Deploy to Prod"
+run-name: "deploy build-${{ github.event.workflow_run.run_number }} to prod"
+
+on:
+  workflow_run:
+    workflows: [ "01-01 Build Image" ]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    environment:
+      name: 'prod'
+
+    steps:
+      - name: Get version tag from build workflow run number
+        id: get_version
+        run: |
+          VERSION_TAG=build-${{ github.event.workflow_run.run_number }}
+          echo "version_tag=$VERSION_TAG" >> $GITHUB_OUTPUT
+
+      - name: Show the version tag
+        run: echo ${{ env.VERSION_TAG }}
+
+      - name: Deploy application
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: 'https://r-systems-cloud.com/api/hooks/git-tests-prod'
+          method: 'POST'
+          customHeaders: '{"x-api-key": "${{ secrets.DEPLOY_PROD_APP_KEY }}"}'
+          data: '{"image_tag": "${{ steps.get_version.outputs.version_tag }}"}'
+          timeout: 300000
