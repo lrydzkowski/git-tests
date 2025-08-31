@@ -12,7 +12,8 @@ public class AppController : ControllerBase
         return Ok(
             new
             {
-                App = "GitTests"
+                App = "GitTests",
+                Version = "v2"
             }
         );
     }
