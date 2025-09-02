@@ -16,11 +16,26 @@ jobs:
       name: 'test'
 
     steps:
-      - name: Get version tag from build workflow run number
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Get version tag from build workflow
         id: get_version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION_TAG=build-${{ github.event.workflow_run.run_number }}
+          WORKFLOW_RUN_ID="${{ github.event.workflow_run.id }}"
+          
+          # Get the branch_name input from the triggering workflow
+          VERSION_TAG=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID | jq -r '.inputs.branch_name // empty')
+          
+          if [ -z "$VERSION_TAG" ]; then
+            echo "Error: Could not retrieve branch_name from workflow inputs"
+            exit 1
+          fi
+          
           echo "version_tag=$VERSION_TAG" >> $GITHUB_OUTPUT
+          echo "Retrieved version tag: $VERSION_TAG"
 
       - name: Show the version tag
         run: echo ${{ env.VERSION_TAG }}
