@@ -11,6 +11,11 @@ on:
         description: 'Run name for the workflow'
         required: true
         type: string
+      branch_name:
+        description: 'Branch name to build from'
+        required: false
+        type: string
+        default: 'master'
 
 env:
   REGISTRY: ghcr.io
@@ -28,6 +33,8 @@ jobs:
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch_name }}
 
       - name: Set version tag
         run: echo "VERSION_TAG=${{ inputs.version_tag }}" >> $GITHUB_ENV
