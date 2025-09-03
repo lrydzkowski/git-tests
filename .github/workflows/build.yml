@@ -11,6 +11,10 @@ on:
         description: 'Run name for the workflow'
         required: true
         type: string
+    outputs:
+      unique_version_tag:
+        description: 'The unique version tag that was used for the build'
+        value: ${{ jobs.build.outputs.unique_version_tag }}
 
 env:
   REGISTRY: ghcr.io
@@ -24,6 +28,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: ${{ inputs.run_name }}
+    outputs:
+      unique_version_tag: ${{ steps.find_tag.outputs.unique_version_tag }}
 
     steps:
       - name: Checkout the repository
@@ -54,6 +60,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Find available tag
+        id: find_tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -70,6 +77,7 @@ jobs:
             else
               echo "Found available tag: $UNIQUE_TAG"
               echo "UNIQUE_VERSION_TAG=$UNIQUE_TAG" >> $GITHUB_ENV
+              echo "unique_version_tag=$UNIQUE_TAG" >> $GITHUB_OUTPUT
               break
             fi
           done
