@@ -19,21 +19,16 @@ jobs:
       run_name: "hotfix-${{ github.run_number }}"
     secrets: inherit
   
-  trigger_deployment:
+  save_version:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Trigger deployment workflow
-        uses: actions/github-script@v7
+      - name: Save version tag to artifact
+        run: echo "${{ needs.build.outputs.unique_version_tag }}" > version_tag.txt
+      
+      - name: Upload version tag artifact
+        uses: actions/upload-artifact@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: '03-02-deploy-hotfix-to-test.yml',
-              ref: '${{ github.ref }}',
-              inputs: {
-                version_tag: '${{ needs.build.outputs.unique_version_tag }}',
-              }
-            })
+          name: version-tag
+          path: version_tag.txt
+          retention-days: 1
