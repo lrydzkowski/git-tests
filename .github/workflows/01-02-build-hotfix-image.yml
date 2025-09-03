@@ -15,6 +15,6 @@ jobs:
   build:
     uses: ./.github/workflows/build.yml
     with:
-      version_tag: ${{ github.event.inputs.branch_name }}
+      version_tag: ${{ github.ref_name }}
       run_name: "hotfix-${{ github.run_number }}"
     secrets: inherit
