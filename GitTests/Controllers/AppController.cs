@@ -14,7 +14,7 @@ public class AppController : ControllerBase
             {
                 App = "GitTests",
                 Version = "v15",
-                Test = "2"
+                Test = "3"
             }
         );
     }
