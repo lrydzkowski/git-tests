@@ -2,23 +2,33 @@ name: "03-02 Deploy Hotfix to Test"
 run-name: "deploy hotfix-${{ github.event.workflow_run.run_number }} to test"
 
 on:
-  workflow_dispatch:
-    inputs:
-      version_tag:
-        description: 'Version to deploy'
-        required: true
-        type: string
+  workflow_run:
+    workflows: [ "01-02 Build Hotfix Image" ]
+    types:
+      - completed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     environment:
       name: 'test'
 
     steps:
-      - name: Show the version tag
-        run: echo ${{ inputs.version_tag }}
+      - name: Download version tag artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: version-tag
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Get version tag
+        id: get_version
+        run: |
+          VERSION_TAG=$(cat version_tag.txt)
+          echo "version_tag=$VERSION_TAG" >> $GITHUB_OUTPUT
+          echo "Retrieved version tag: $VERSION_TAG"
 
       - name: Deploy application
         uses: fjogeleit/http-request-action@v1
@@ -26,5 +36,5 @@ jobs:
           url: 'https://r-systems-cloud.com/api/hooks/git-tests-test'
           method: 'POST'
           customHeaders: '{"x-api-key": "${{ secrets.DEPLOY_TEST_APP_KEY }}"}'
-          data: '{"image_tag": "${{ inputs.version_tag }}"}'
+          data: '{"image_tag": "${{ steps.get_version.outputs.version_tag }}"}'
           timeout: 300000
