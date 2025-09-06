@@ -1,5 +1,5 @@
 name: "04-02 Deploy Hotfix to Prod"
-run-name: "deploy hotfix-${{ github.event.workflow_run.run_number }} to prod"
+run-name: "deploy ${{ inputs.version_tag }} to prod"
 
 on:
   workflow_dispatch:
