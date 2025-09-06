@@ -39,7 +39,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: '03-02 Deploy Hotfix to Test.yml',
-              ref: '${{ github.ref }},
+              ref: '${{ github.ref }}',
               inputs: {
                 version_tag: '${{ needs.build.outputs.unique_version_tag }}'
               }
@@ -54,7 +54,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: '04-02 Deploy Hotfix to Prod.yml',
-              ref: '${{ github.ref }},
+              ref: '${{ github.ref }}',
               inputs: {
                 version_tag: '${{ needs.build.outputs.unique_version_tag }}'
               }
