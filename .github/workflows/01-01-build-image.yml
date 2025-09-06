@@ -24,6 +24,7 @@ jobs:
   
   trigger_deployment:
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Generate a token
         id: generate_token
