@@ -41,7 +41,7 @@ jobs:
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: '02-01 Deploy to Demo.yml',
+              workflow_id: '02-01-deploy-to-demo.yml',
               ref: '${{ github.ref }}',
               inputs: {
                 version_tag: '${{ needs.build.outputs.unique_version_tag }}'
@@ -56,7 +56,7 @@ jobs:
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: '03-01 Deploy to Test.yml',
+              workflow_id: '03-01-deploy-to-test.yml',
               ref: '${{ github.ref }}',
               inputs: {
                 version_tag: '${{ needs.build.outputs.unique_version_tag }}'
@@ -71,7 +71,7 @@ jobs:
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: '04-01 Deploy to Prod.yml',
+              workflow_id: '04-01-deploy-to-prod.yml',
               ref: '${{ github.ref }}',
               inputs: {
                 version_tag: '${{ needs.build.outputs.unique_version_tag }}'
