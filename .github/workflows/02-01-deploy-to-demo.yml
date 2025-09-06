@@ -1,5 +1,5 @@
 name: "02-01 Deploy to Demo"
-run-name: "deploy build-${{ github.event.workflow_run.run_number }} to demo"
+run-name: "deploy ${{ inputs.version_tag }} to demo"
 
 on:
   workflow_dispatch:

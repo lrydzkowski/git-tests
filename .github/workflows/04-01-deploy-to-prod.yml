@@ -1,5 +1,5 @@
 name: "04-01 Deploy to Prod"
-run-name: "deploy build-${{ github.event.workflow_run.run_number }} to prod"
+run-name: "deploy ${{ inputs.version_tag }} to prod"
 
 on:
   workflow_dispatch:
