@@ -13,7 +13,7 @@ public class AppController : ControllerBase
             new
             {
                 App = "GitTests",
-                Version = "v25",
+                Version = "v26",
                 Test = "5"
             }
         );
