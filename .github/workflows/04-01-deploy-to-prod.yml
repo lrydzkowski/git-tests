@@ -23,7 +23,7 @@ jobs:
       - name: Deploy application
         uses: fjogeleit/http-request-action@v1
         with:
-          url: 'https://r-systems-cloud.com/api/hooks/git-tests-prod'
+          url: 'https://v2.r-systems-cloud-alt.com/api/hooks/git-tests-prod'
           method: 'POST'
           customHeaders: '{"x-api-key": "${{ secrets.DEPLOY_PROD_APP_KEY }}"}'
           data: '{"image_tag": "${{ inputs.version_tag }}"}'
